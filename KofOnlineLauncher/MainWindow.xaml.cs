@@ -31,7 +31,9 @@ public partial class MainWindow : Window
             GameStatus.Text = "Consultando atualizações oficiais…";
             using var updateHttp = new HttpClient { Timeout = TimeSpan.FromMinutes(30) };
             updateHttp.DefaultRequestHeaders.UserAgent.Add(new ProductInfoHeaderValue("KofAndrewLauncher", "1.0"));
-            var manifestJson = await updateHttp.GetStringAsync(_config.UpdateManifestUrl);
+            var separator = _config.UpdateManifestUrl.Contains('?') ? "&" : "?";
+            var manifestUrl = $"{_config.UpdateManifestUrl}{separator}t={DateTimeOffset.UtcNow.ToUnixTimeSeconds()}";
+            var manifestJson = (await updateHttp.GetStringAsync(manifestUrl)).TrimStart('\uFEFF');
             var manifest = JsonSerializer.Deserialize<UpdateManifest>(manifestJson, UpdateJson.Options)
                 ?? throw new InvalidDataException("Manifesto de atualização inválido.");
             VersionText.Text = $"v{manifest.Version}";

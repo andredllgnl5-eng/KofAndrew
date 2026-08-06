@@ -58,7 +58,12 @@ $manifest = [ordered]@{
 $manifestJson = $manifest | ConvertTo-Json -Depth 5
 [IO.File]::WriteAllText($manifestPath, $manifestJson, (New-Object Text.UTF8Encoding($false)))
 
-gh release create $tag $archive --repo andredllgnl5-eng/KofAndrew-Updates --title "KOF Andrew Online $tag" --notes "Atualização oficial do KOF Andrew Online. Made By Andrew."
+gh release view $tag --repo andredllgnl5-eng/KofAndrew-Updates *> $null
+if ($LASTEXITCODE -eq 0) {
+    gh release upload $tag $archive --repo andredllgnl5-eng/KofAndrew-Updates --clobber
+} else {
+    gh release create $tag $archive --repo andredllgnl5-eng/KofAndrew-Updates --title "KOF Andrew Online $tag" --notes "Atualização oficial do KOF Andrew Online. Made By Andrew."
+}
 $updatesRepo = Join-Path $OutputPath 'updates-repo'
 if (-not (Test-Path (Join-Path $updatesRepo '.git'))) {
     gh repo clone andredllgnl5-eng/KofAndrew-Updates $updatesRepo
