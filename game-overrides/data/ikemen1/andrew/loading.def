@@ -1,0 +1,14 @@
+[SceneDef]
+spr = loading.sff
+startscene = 0
+
+[Scene 0]
+fadein.time = 8
+fadeout.time = 8
+clearcolor = 0,0,0
+layer0.anim = 0
+layer0.offset = 0,0
+end.time = 999999
+
+[Begin Action 0]
+0,0, 0,0, -1
