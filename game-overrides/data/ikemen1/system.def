@@ -138,21 +138,21 @@ loading.xshear = 0.12
 loading.text = KofAndrew....
 loading.storyboard = data/ikemen1/andrew/loading.def
 	
-footer.title.font = default-3x5.def, 0, 1, 191, 191, 191, 255, -1
+footer.title.font = -1
 footer.title.offset = 5, 721
 footer.title.scale = 3,3
 
-footer.info.font = default-3x5.def, 0, 0, 191, 191, 191, 255, -1
+footer.info.font = -1
 footer.info.offset = 640, 721
 footer.info.scale = 3,3
 
-footer.version.font = default-3x5.def, 0, -1, 191, 191, 191, 255, -1
+footer.version.font = -1
 footer.version.offset = 1275, 721
 footer.version.scale = 3,3
 
 footer.overlay.col = 0, 0, 64
-footer.overlay.alpha = 255, 100
-footer.overlay.window = 0, 700, 1280, 720
+footer.overlay.alpha = 0, 0
+footer.overlay.window = 0, 720, 0, 720
 
 ;Network menu
 connecting.offset = 640, 393
