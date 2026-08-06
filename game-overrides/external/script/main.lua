@@ -3791,6 +3791,11 @@ function main.f_menuCommonDraw(t, item, cursorPosY, moveTxt, sec, bg, skipClear,
 		-- shared position
 		local posX = offx + (i - 1) * m.item.spacing[1]
 		local posY = offy + (i - 1) * m.item.spacing[2] - moveTxt
+		-- Telas KOF Andrew podem posicionar cada item independentemente.
+		if itemData.koffoffset ~= nil then
+			posX = offx + itemData.koffoffset[1]
+			posY = offy + itemData.koffoffset[2]
+		end
 		-- background params
 		local bgTable = isActive and m.item.active.bg or m.item.bg
 		local params = bgTable[itemData.paramname] or bgTable.default
@@ -4036,17 +4041,159 @@ if not koffServerOnline and motif.title_info ~= nil and motif.title_info.menu ~=
 	motif.title_info.menu.itemname.menunetwork = ''
 end
 
--- Abre os paineis de sala sobre o jogo. O comando START devolve o controle
--- imediatamente ao IKEMEN, mantendo a musica e a tela principal ativas.
-local function koffOpenRooms(mode)
-	os.execute('start KofRooms.exe ' .. mode)
+-- Salas KOF Andrew integradas ao proprio IKEMEN. Um auxiliar sem janela faz
+-- somente o HTTP; toda a interface continua sendo desenhada pelo jogo.
+local koffRoom = {nickname = 'Player', roomName = 'Sala KOF Andrew', players = 2, spectators = 4}
+
+local function koffJsonEscape(s)
+	return tostring(s or ''):gsub('\\', '\\\\'):gsub('"', '\\"'):gsub('\r', ''):gsub('\n', '\\n')
 end
-main.t_itemname['serverhost'] = function(t, item)
-	koffOpenRooms('create')
+
+local function koffRequest(json)
+	main.f_fileWrite('save/koff-room-request.json', json)
+	os.remove('save/koff-room-response.json')
+	local timeout = os.clock() + 8
+	while not main.f_fileExists('save/koff-room-response.json') and os.clock() < timeout do
+		main.f_loadingRefresh()
+	end
+	local raw = main.f_fileRead('save/koff-room-response.json', 'r', true)
+	if raw == nil or raw == '' then return nil, 'O servidor nao respondeu.' end
+	-- IKEMEN recebe aqui o caminho do arquivo, e nao o JSON em texto.
+	local ok, response = pcall(jsonDecode, 'save/koff-room-response.json')
+	if not ok or response == nil then return nil, 'Resposta invalida do servidor.' end
+	if not response.ok then return nil, response.error or 'Nao foi possivel conectar.' end
+	return response.data, nil
 end
-main.t_itemname['serverjoin'] = function(t, item)
-	koffOpenRooms('join')
+
+local function koffMessage(text)
+	main.f_warning(
+		text,
+		motif[main.group], motif[main.background],
+		motif.infobox.overlay.RectData,
+		motif.infobox.title.TextSpriteData,
+		motif.infobox.text.TextSpriteData
+	)
 end
+
+local function koffInput(label, current)
+	return main.f_drawInput(
+		motif.title_info.textinput.TextSpriteData,
+		label .. '\nENTER confirma  |  ESC cancela',
+		motif.title_info, motif[main.background],
+		motif.title_info.textinput.overlay.RectData,
+		current
+	)
+end
+
+local function koffRoomLobby(roomId, playerId)
+	local function refreshItems()
+		local data, err = koffRequest(string.format('{"action":"snapshot","roomId":"%s"}', roomId))
+		if data == nil then return nil, err end
+		koffRequest(string.format('{"action":"heartbeat","roomId":"%s","playerId":"%s"}', roomId, playerId))
+		local p1 = data.playerOne and data.playerOne.nickname or 'AGUARDANDO'
+		local p2 = data.playerTwo and data.playerTwo.nickname or 'AGUARDANDO'
+		return {
+			{itemname = 'koffroominfo', displayname = p1 .. '  VS  ' .. p2},
+			{itemname = 'koffqueue', displayname = 'ENTRAR / SAIR DA FILA'},
+			{itemname = 'koffstart', displayname = 'INICIAR PARTIDA'},
+			{itemname = 'koffrefresh', displayname = 'ATUALIZAR SALA'},
+			{itemname = 'koffleave', displayname = 'SAIR DA SALA'},
+		}, data
+	end
+	local items, snapshot = refreshItems()
+	if items == nil then koffMessage(snapshot); return end
+	local menu = {title = snapshot.name or 'SALA ONLINE', submenu = {}, items = items}
+	main.t_itemname['koffroominfo'] = function() end
+	main.t_itemname['koffqueue'] = function()
+		local _, err = koffRequest(string.format('{"action":"queue","roomId":"%s","playerId":"%s","join":true}', roomId, playerId))
+		if err then koffMessage(err) end
+	end
+	main.t_itemname['koffstart'] = function()
+		local _, err = koffRequest(string.format('{"action":"start","roomId":"%s","playerId":"%s"}', roomId, playerId))
+		if err then koffMessage(err) else koffMessage('Partida iniciada. Preparando a selecao de personagens...') end
+	end
+	main.t_itemname['koffrefresh'] = function() return function() koffRoomLobby(roomId, playerId) end end
+	main.t_itemname['koffleave'] = function()
+		koffRequest(string.format('{"action":"leave","roomId":"%s","playerId":"%s"}', roomId, playerId))
+		main.close = true
+	end
+	menu.loop = main.f_createMenu(menu, false, false, true, false)
+	menu.loop()
+end
+
+local function koffCreateRoomScreen()
+	local previousBackground = main.background
+	local previousGroup = main.group
+	main.background = 'selectbgdef'
+	local menu = {title = '', submenu = {}, items = {
+		{itemname = 'koffnickname', displayname = 'APELIDO: ' .. koffRoom.nickname},
+		{itemname = 'koffroomname', displayname = 'SALA: ' .. koffRoom.roomName},
+		{itemname = 'koffplayers', displayname = 'JOGADORES: ' .. koffRoom.players},
+		{itemname = 'koffspectators', displayname = 'ESPECTADORES: ' .. koffRoom.spectators},
+		{itemname = 'koffcreate', displayname = 'CRIAR SALA'},
+		{itemname = 'back', displayname = 'VOLTAR'},
+	}}
+	main.t_itemname['koffnickname'] = function(t, item)
+		local value = koffInput('DIGITE SEU APELIDO', koffRoom.nickname)
+		if value ~= '' then koffRoom.nickname = value; t[item].displayname = 'APELIDO: ' .. value end
+	end
+	main.t_itemname['koffroomname'] = function(t, item)
+		local value = koffInput('DIGITE O NOME DA SALA', koffRoom.roomName)
+		if value ~= '' then koffRoom.roomName = value; t[item].displayname = 'SALA: ' .. value end
+	end
+	main.t_itemname['koffplayers'] = function(t, item)
+		koffRoom.players = koffRoom.players == 2 and 1 or 2
+		t[item].displayname = 'JOGADORES: ' .. koffRoom.players
+	end
+	main.t_itemname['koffspectators'] = function(t, item)
+		koffRoom.spectators = (koffRoom.spectators + 1) % 5
+		t[item].displayname = 'ESPECTADORES: ' .. koffRoom.spectators
+	end
+	main.t_itemname['koffcreate'] = function()
+		local request = string.format('{"action":"create","nickname":"%s","roomName":"%s","spectatorCapacity":%d}', koffJsonEscape(koffRoom.nickname), koffJsonEscape(koffRoom.roomName), koffRoom.spectators)
+		local data, err = koffRequest(request)
+		if data == nil then koffMessage(err); return end
+		return function() koffRoomLobby(data.roomId, data.playerId) end
+	end
+	menu.loop = main.f_createMenu(menu, false, false, true, false)
+	menu.loop()
+	main.background = previousBackground
+	main.group = previousGroup
+end
+
+local function koffJoinRoomScreen()
+	local rooms, err = koffRequest('{"action":"rooms"}')
+	if rooms == nil then koffMessage(err); return end
+	local previousBackground = main.background
+	local previousGroup = main.group
+	main.background = 'replaybgdef'
+	main.group = 'replay_info'
+	local menu = {title = 'SALAS ONLINE', submenu = {}, items = {}}
+	for i, room in ipairs(rooms) do
+		local action = 'koffjoin_' .. i
+		table.insert(menu.items, {itemname = action, displayname = string.format('%-22s  %d/%d     %s', room.name, room.participants, room.capacity, room.status == 'running' and 'EM LUTA' or 'ONLINE'), koffoffset = {-70, 125 + (i - 1) * 55}})
+		main.t_itemname[action] = function()
+			local nickname = koffInput('DIGITE SEU APELIDO', koffRoom.nickname)
+			if nickname == '' then return end
+			koffRoom.nickname = nickname
+			local data, joinErr = koffRequest(string.format('{"action":"join","roomId":"%s","nickname":"%s"}', room.id, koffJsonEscape(nickname)))
+			if data == nil then koffMessage(joinErr); return end
+			return function() koffRoomLobby(room.id, data.playerId) end
+		end
+	end
+	if #menu.items == 0 then table.insert(menu.items, {itemname = 'koffnorooms', displayname = 'NENHUMA SALA DISPONIVEL', koffoffset = {-70, 125}}) end
+	main.t_itemname['koffnorooms'] = function() end
+	table.insert(menu.items, {itemname = 'koffreloadrooms', displayname = 'ATUALIZAR LISTA', koffoffset = {235, 500}})
+	table.insert(menu.items, {itemname = 'back', displayname = 'VOLTAR', koffoffset = {540, 500}})
+	main.t_itemname['koffreloadrooms'] = function() return koffJoinRoomScreen end
+	menu.loop = main.f_createMenu(menu, false, false, true, false)
+	menu.loop()
+	main.background = previousBackground
+	main.group = previousGroup
+end
+
+main.t_itemname['serverhost'] = function() return koffCreateRoomScreen end
+main.t_itemname['serverjoin'] = function() return koffJoinRoomScreen end
 
 main.f_start()
 menu.f_start()
