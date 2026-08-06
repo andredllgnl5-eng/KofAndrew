@@ -11,5 +11,6 @@
   <ItemGroup>
     <Resource Include="Assets\kyo-background.png" />
     <Resource Include="Assets\kyo-orochi-andrew-background.png" />
+    <Resource Include="Assets\ajude-projeto-qrcode.png" />
   </ItemGroup>
 </Project>

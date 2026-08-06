@@ -21,9 +21,6 @@
         <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
           <TextBlock Text="KOF" Foreground="{StaticResource Gold}" FontSize="27" FontWeight="Black" />
           <TextBlock Text=" ONLINE" Foreground="White" FontSize="27" FontWeight="Light" />
-          <Border Background="#FF9D1D27" CornerRadius="3" Margin="14,0,0,0" Padding="8,3">
-            <TextBlock Text="ALPHA" Foreground="White" FontWeight="Bold" FontSize="11" />
-          </Border>
         </StackPanel>
         <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" VerticalAlignment="Center">
           <Ellipse x:Name="ServerDot" Width="9" Height="9" Fill="#FF777777" Margin="0,0,8,0" />
@@ -47,10 +44,21 @@
         <Grid>
           <Grid.RowDefinitions><RowDefinition Height="Auto"/><RowDefinition Height="*"/><RowDefinition Height="Auto"/></Grid.RowDefinitions>
           <TextBlock Text="ARENA ONLINE" Foreground="{StaticResource Gold}" FontSize="18" FontWeight="Bold" />
-          <StackPanel Grid.Row="1" VerticalAlignment="Center">
-            <TextBlock Text="A fundação está pronta" Foreground="White" FontSize="29" FontWeight="Bold" HorizontalAlignment="Center" />
-            <TextBlock Text="O próximo módulo adicionará salas, fila de espera e espectadores sem modificar os arquivos do seu MUGEN." Foreground="#FFC3C4CC" FontSize="16" TextWrapping="Wrap" TextAlignment="Center" MaxWidth="520" Margin="0,14,0,0" />
-          </StackPanel>
+          <Grid Grid.Row="1" Margin="8,16,8,12">
+            <Grid.ColumnDefinitions><ColumnDefinition Width="*"/><ColumnDefinition Width="205"/></Grid.ColumnDefinitions>
+            <StackPanel VerticalAlignment="Center" Margin="0,0,25,0">
+              <TextBlock Text="UM PROJETO FEITO" Foreground="White" FontSize="27" FontWeight="Black" TextAlignment="Center" />
+              <TextBlock Text="PARA DIVERSÃO" Foreground="{StaticResource Gold}" FontSize="31" FontWeight="Black" TextAlignment="Center" Margin="0,2,0,0" />
+              <Rectangle Height="3" Width="90" Fill="#FFB32631" Margin="0,15,0,15" />
+              <TextBlock Text="Criado com carinho para reunir a comunidade e compartilhar grandes batalhas." Foreground="#FFC3C4CC" FontSize="14" TextWrapping="Wrap" TextAlignment="Center" MaxWidth="310" />
+            </StackPanel>
+            <StackPanel Grid.Column="1" VerticalAlignment="Center">
+              <TextBlock Text="AJUDE MEU PROJETO" Foreground="{StaticResource Gold}" FontSize="14" FontWeight="Bold" HorizontalAlignment="Center" Margin="0,0,0,8" />
+              <Border Background="White" CornerRadius="11" Padding="8" BorderBrush="#66F2BA49" BorderThickness="1">
+                <Image Source="/Assets/ajude-projeto-qrcode.png" Width="165" Height="168" Stretch="Uniform" />
+              </Border>
+            </StackPanel>
+          </Grid>
           <Border Grid.Row="2" Background="#66101016" CornerRadius="5" Padding="15,12">
             <StackPanel>
               <TextBlock Text="INSTALAÇÃO E ATUALIZAÇÕES" Foreground="#FF888B95" FontSize="11" FontWeight="Bold" />
