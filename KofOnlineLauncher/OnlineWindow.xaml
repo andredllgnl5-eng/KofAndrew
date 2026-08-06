@@ -1,0 +1,60 @@
+<Window x:Class="KofOnlineLauncher.OnlineWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="Arena KOFF" Width="900" Height="610" MinWidth="780" MinHeight="540"
+        WindowStartupLocation="CenterOwner">
+  <Window.Background>
+    <ImageBrush ImageSource="/Assets/kyo-orochi-andrew-background.png" Stretch="UniformToFill" Opacity="0.28" />
+  </Window.Background>
+  <Grid Margin="30">
+    <Grid.RowDefinitions><RowDefinition Height="Auto"/><RowDefinition Height="Auto"/><RowDefinition Height="*"/><RowDefinition Height="Auto"/></Grid.RowDefinitions>
+    <Grid>
+      <StackPanel>
+        <TextBlock Text="ARENA KOFF #01" Foreground="{StaticResource Gold}" FontSize="27" FontWeight="Black" />
+        <TextBlock Text="Ganhador permanece • uma partida ativa" Foreground="#FF9EA0A9" FontSize="13" />
+      </StackPanel>
+      <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" VerticalAlignment="Center">
+        <Ellipse Width="9" Height="9" Fill="#FF4CDD7F" Margin="0,0,8,0" />
+        <TextBlock Text="CONECTADO" Foreground="#FFBFC1C9" FontWeight="Bold" />
+      </StackPanel>
+    </Grid>
+
+    <Border Grid.Row="1" x:Name="LoginPanel" Background="#FF151720" CornerRadius="7" BorderBrush="#33FFFFFF" BorderThickness="1" Padding="18" Margin="0,24,0,18">
+      <Grid><Grid.ColumnDefinitions><ColumnDefinition/><ColumnDefinition Width="180"/></Grid.ColumnDefinitions>
+        <TextBox x:Name="NicknameBox" Height="44" FontSize="16" Padding="12,8" VerticalContentAlignment="Center" MaxLength="18" ToolTip="Digite seu apelido" />
+        <Button Grid.Column="1" Content="ENTRAR" Height="44" Margin="12,0,0,0" Click="Login_Click" />
+      </Grid>
+    </Border>
+
+    <Grid Grid.Row="2">
+      <Grid.ColumnDefinitions><ColumnDefinition Width="1.25*"/><ColumnDefinition Width="0.75*"/></Grid.ColumnDefinitions>
+      <Border Background="#CC151720" CornerRadius="8" BorderBrush="#33FFFFFF" BorderThickness="1" Padding="22">
+        <StackPanel>
+          <TextBlock Text="COMBATE ATUAL" Foreground="#FF979AA5" FontSize="12" FontWeight="Bold" />
+          <Grid Margin="0,35,0,0"><Grid.ColumnDefinitions><ColumnDefinition/><ColumnDefinition Width="80"/><ColumnDefinition/></Grid.ColumnDefinitions>
+            <StackPanel><TextBlock Text="PLAYER 1" Foreground="{StaticResource Gold}" HorizontalAlignment="Center"/><TextBlock x:Name="PlayerOneText" Text="AGUARDANDO" Foreground="White" FontSize="21" FontWeight="Bold" HorizontalAlignment="Center" Margin="0,9"/></StackPanel>
+            <TextBlock Grid.Column="1" Text="VS" Foreground="#FFB32631" FontSize="29" FontWeight="Black" HorizontalAlignment="Center" VerticalAlignment="Top" Margin="0,17,0,0" />
+            <StackPanel Grid.Column="2"><TextBlock Text="PLAYER 2" Foreground="{StaticResource Gold}" HorizontalAlignment="Center"/><TextBlock x:Name="PlayerTwoText" Text="AGUARDANDO" Foreground="White" FontSize="21" FontWeight="Bold" HorizontalAlignment="Center" Margin="0,9"/></StackPanel>
+          </Grid>
+          <TextBlock x:Name="MyStatusText" Text="Entre com um apelido para participar." Foreground="#FFC4C6CE" TextAlignment="Center" Margin="0,42,0,0" TextWrapping="Wrap" />
+        </StackPanel>
+      </Border>
+      <Border Grid.Column="1" Background="#CC151720" CornerRadius="8" BorderBrush="#33FFFFFF" BorderThickness="1" Padding="20" Margin="16,0,0,0">
+        <Grid><Grid.RowDefinitions><RowDefinition Height="Auto"/><RowDefinition Height="*"/><RowDefinition Height="Auto"/></Grid.RowDefinitions>
+          <TextBlock Text="FILA DE ESPERA" Foreground="{StaticResource Gold}" FontSize="15" FontWeight="Bold" />
+          <ListBox Grid.Row="1" x:Name="QueueList" Background="Transparent" BorderThickness="0" Foreground="White" Margin="0,15" FontSize="14" />
+          <TextBlock Grid.Row="2" x:Name="SpectatorText" Text="0 espectadores" Foreground="#FF9EA0A9" />
+        </Grid>
+      </Border>
+    </Grid>
+
+    <StackPanel Grid.Row="3" Orientation="Horizontal" Margin="0,20,0,0">
+      <Button x:Name="QueueButton" Content="ENTRAR NA FILA" Height="48" Width="260" IsEnabled="False" Click="Queue_Click" />
+      <Button x:Name="ReadyButton" Content="ESTOU PRONTO" Height="48" Width="230" Margin="14,7,0,7" IsEnabled="False" Visibility="Collapsed" Click="Ready_Click" Background="#FFB17A13" BorderBrush="#FFF2BA49" />
+      <Border x:Name="MatchReadyPanel" Visibility="Collapsed" Background="#CC174D2A" CornerRadius="5" Padding="18,0" Margin="14,7,0,7">
+        <TextBlock x:Name="MatchReadyText" Text="✓ OS DOIS ESTÃO PRONTOS" Foreground="#FF7DF0A3" FontWeight="Bold" VerticalAlignment="Center" />
+      </Border>
+      <TextBlock Text="Made By Andrew" Foreground="{StaticResource Gold}" FontSize="12" FontWeight="Bold" VerticalAlignment="Center" Margin="18,0,0,0" />
+    </StackPanel>
+  </Grid>
+</Window>

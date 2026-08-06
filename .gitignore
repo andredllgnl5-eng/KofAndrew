@@ -1,0 +1,11 @@
+**/bin/
+**/obj/
+.vs/
+release-build/
+release-output/
+*.zip
+*.rar
+*.pdb
+launcher-config.json
+client-version.json
+KofAndrew-Updates-repo/

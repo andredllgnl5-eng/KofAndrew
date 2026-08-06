@@ -1,0 +1,15 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>net6.0-windows</TargetFramework>
+    <UseWPF>true</UseWPF>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <AssemblyName>KOF Online</AssemblyName>
+    <RootNamespace>KofOnlineLauncher</RootNamespace>
+  </PropertyGroup>
+  <ItemGroup>
+    <Resource Include="Assets\kyo-background.png" />
+    <Resource Include="Assets\kyo-orochi-andrew-background.png" />
+  </ItemGroup>
+</Project>
