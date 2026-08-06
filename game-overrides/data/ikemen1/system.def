@@ -552,7 +552,7 @@ p1.face.done.anim = 181            ;Portrait to use when selection is confirmed
 p2.face.done.anim = 181
 
 ;Secondary big portraits
-p1.face2.spr = 9000,1              ;Secondary portrait
+p1.face2.spr = -1,0                ;Retrato secundario oculto: remove paineis brancos dos personagens
 p1.face2.projection = perspective
 p1.face2.yangle = 70
 p1.face2.layerno = 2
@@ -563,7 +563,7 @@ p1.face2.facing = 1
 p1.face2.window = 0,46, 476,629
 p1.face2.applypal = 1
 
-p2.face2.spr = 9000,1
+p2.face2.spr = -1,0
 p2.face2.projection = perspective
 p2.face2.yangle = -70
 p2.face2.layerno = 2
