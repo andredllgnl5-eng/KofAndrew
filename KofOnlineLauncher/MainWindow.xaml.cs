@@ -25,7 +25,7 @@ public partial class MainWindow : Window
 
     private async Task CheckUpdatesThenServerAsync()
     {
-        OnlineButton.IsEnabled = false;
+        GameButton.IsEnabled = false;
         try
         {
             GameStatus.Text = "Consultando atualizações oficiais…";
@@ -49,13 +49,15 @@ public partial class MainWindow : Window
             GameStatus.Text = $"✓ Jogo atualizado — v{manifest.Version}";
             GameStatus.Foreground = new System.Windows.Media.SolidColorBrush(System.Windows.Media.Color.FromRgb(100, 220, 139));
             await CheckServerAsync();
+            GameButton.IsEnabled = true;
         }
         catch (Exception ex)
         {
             GameStatus.Text = $"Não foi possível verificar a atualização: {ex.Message}";
             GameStatus.Foreground = new System.Windows.Media.SolidColorBrush(System.Windows.Media.Color.FromRgb(244, 105, 105));
             ServerStatus.Text = "Atualização não verificada";
-            OnlineButton.IsEnabled = false;
+            WriteServerState(false);
+            GameButton.IsEnabled = File.Exists(GameExecutable);
         }
     }
 
@@ -135,7 +137,7 @@ public partial class MainWindow : Window
         Application.Current.Shutdown();
     }
 
-    private async Task CheckServerAsync()
+    private async Task<bool> CheckServerAsync()
     {
         try
         {
@@ -143,20 +145,30 @@ public partial class MainWindow : Window
             response.EnsureSuccessStatusCode();
             ServerStatus.Text = "KOFF Community Server online";
             ServerDot.Fill = new System.Windows.Media.SolidColorBrush(System.Windows.Media.Color.FromRgb(76, 221, 127));
-            OnlineButton.IsEnabled = true;
-            OnlineButton.ToolTip = "Entrar na Arena KOFF";
+            WriteServerState(true);
+            return true;
         }
         catch
         {
             ServerStatus.Text = "Servidor ainda não iniciado";
             ServerDot.Fill = new System.Windows.Media.SolidColorBrush(System.Windows.Media.Color.FromRgb(130, 130, 135));
-            OnlineButton.IsEnabled = false;
+            WriteServerState(false);
+            return false;
         }
     }
 
-    private void PlayOnline_Click(object sender, RoutedEventArgs e)
+    private void WriteServerState(bool online)
     {
-        new OnlineWindow(_config) { Owner = this }.ShowDialog();
+        try
+        {
+            var saveDirectory = Path.Combine(_config.GameDirectory, "save");
+            Directory.CreateDirectory(saveDirectory);
+            File.WriteAllText(Path.Combine(saveDirectory, "koff-server-status.txt"), online ? "online" : "offline");
+        }
+        catch
+        {
+            // A falta do arquivo faz o IKEMEN ocultar o modo ONLINE com segurança.
+        }
     }
 
     private string GameExecutable => Path.Combine(_config.GameDirectory, "Ikemen_GO.exe");
@@ -171,7 +183,7 @@ public partial class MainWindow : Window
             : new System.Windows.Media.SolidColorBrush(System.Windows.Media.Color.FromRgb(244, 105, 105));
     }
 
-    private void PlayOffline_Click(object sender, RoutedEventArgs e)
+    private async void PlayGame_Click(object sender, RoutedEventArgs e)
     {
         if (!File.Exists(GameExecutable))
         {
@@ -179,7 +191,10 @@ public partial class MainWindow : Window
             return;
         }
 
+        GameButton.IsEnabled = false;
+        await CheckServerAsync();
         Process.Start(new ProcessStartInfo(GameExecutable) { WorkingDirectory = _config.GameDirectory, UseShellExecute = true });
+        GameButton.IsEnabled = true;
     }
 
     private void Settings_Click(object sender, RoutedEventArgs e)

@@ -35,22 +35,21 @@
         <TextBlock Text="KING OF FIGHTERS" Foreground="#FFB9BAC2" FontSize="18" FontWeight="SemiBold" />
         <TextBlock Text="98 CUSTOM" Foreground="White" FontSize="47" FontWeight="Black" Margin="0,-2,0,4" />
         <Rectangle Height="3" Fill="{StaticResource Gold}" Width="95" HorizontalAlignment="Left" Margin="0,0,0,25" />
-        <Button x:Name="OnlineButton" Content="JOGAR ONLINE" IsEnabled="False" Click="PlayOnline_Click" ToolTip="Conectando ao servidor…" />
-        <Button Content="JOGAR OFFLINE" Click="PlayOffline_Click" />
+        <Button x:Name="GameButton" Content="JOGAR" Click="PlayGame_Click" ToolTip="Abrir KOF Andrew Online" />
         <Button Content="CONFIGURAÇÕES" Click="Settings_Click" Background="#FF242631" BorderBrush="#FF555865" />
       </StackPanel>
 
       <Border Grid.Column="1" Background="{StaticResource Panel}" CornerRadius="9" BorderBrush="#33FFFFFF" BorderThickness="1" Padding="30" Margin="28,28,0,28">
         <Grid>
           <Grid.RowDefinitions><RowDefinition Height="Auto"/><RowDefinition Height="*"/><RowDefinition Height="Auto"/></Grid.RowDefinitions>
-          <TextBlock Text="ARENA ONLINE" Foreground="{StaticResource Gold}" FontSize="18" FontWeight="Bold" />
+          <TextBlock Text="KOF ANDREW ONLINE" Foreground="{StaticResource Gold}" FontSize="18" FontWeight="Bold" />
           <Grid Grid.Row="1" Margin="8,16,8,12">
             <Grid.ColumnDefinitions><ColumnDefinition Width="*"/><ColumnDefinition Width="205"/></Grid.ColumnDefinitions>
             <StackPanel VerticalAlignment="Center" Margin="0,0,25,0">
               <TextBlock Text="UM PROJETO FEITO" Foreground="White" FontSize="27" FontWeight="Black" TextAlignment="Center" />
               <TextBlock Text="PARA DIVERSÃO" Foreground="{StaticResource Gold}" FontSize="31" FontWeight="Black" TextAlignment="Center" Margin="0,2,0,0" />
               <Rectangle Height="3" Width="90" Fill="#FFB32631" Margin="0,15,0,15" />
-              <TextBlock Text="Criado com carinho para reunir a comunidade e compartilhar grandes batalhas." Foreground="#FFC3C4CC" FontSize="14" TextWrapping="Wrap" TextAlignment="Center" MaxWidth="310" />
+              <TextBlock Text="O modo ONLINE agora fica dentro do jogo e aparece somente quando o servidor está disponível." Foreground="#FFC3C4CC" FontSize="14" TextWrapping="Wrap" TextAlignment="Center" MaxWidth="310" />
             </StackPanel>
             <StackPanel Grid.Column="1" VerticalAlignment="Center">
               <TextBlock Text="AJUDE MEU PROJETO" Foreground="{StaticResource Gold}" FontSize="14" FontWeight="Bold" HorizontalAlignment="Center" Margin="0,0,0,8" />

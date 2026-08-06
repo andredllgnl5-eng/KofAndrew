@@ -209,14 +209,14 @@ menu.itemname.storymode = STORY MODE
 menu.itemname.storymode.back = BACK
 
 ; Submenu: Network
-menu.itemname.menunetwork = NETWORK
-menu.itemname.menunetwork.serverhost = HOST GAME
-menu.itemname.menunetwork.serverjoin = JOIN GAME
-menu.itemname.menunetwork.back = BACK
+menu.itemname.menunetwork = ONLINE
+menu.itemname.menunetwork.serverhost = CRIAR PARTIDA
+menu.itemname.menunetwork.serverjoin = ENTRAR EM PARTIDA
+menu.itemname.menunetwork.back = VOLTAR
 
 ; known IP addresses show up before serverjoin.back item
-menu.itemname.menunetwork.serverjoin.joinadd = NEW ADDRESS
-menu.itemname.menunetwork.serverjoin.back = BACK
+menu.itemname.menunetwork.serverjoin.joinadd = NOVO ENDERECO
+menu.itemname.menunetwork.serverjoin.back = VOLTAR
 
 ; This group is hidden and should not be moved to other menus.
 ; It's opened automatically, after synchronization with online player.
