@@ -1,0 +1,33 @@
+[Info]
+localcoord = 1280,720
+
+[SceneDef]
+spr = ad-logo.sff
+startscene = 0
+
+[Scene 0]
+fadein.time = 20
+fadeout.time = 35
+clearcolor = 0,0,0
+layer0.anim = 0
+layer0.offset = 0,0
+end.time = 200
+
+[Begin Action 0]
+0,0, 0,0, 4
+0,1, 0,0, 4
+0,2, 0,0, 4
+0,3, 0,0, 4
+0,4, 0,0, 4
+0,5, 0,0, 4
+0,6, 0,0, 4
+0,7, 0,0, 4
+0,8, 0,0, 4
+0,9, 0,0, 4
+0,10, 0,0, 4
+0,11, 0,0, 4
+0,12, 0,0, 4
+0,13, 0,0, 4
+0,14, 0,0, 4
+0,15, 0,0, 4
+loopstart
