@@ -4036,6 +4036,18 @@ if not koffServerOnline and motif.title_info ~= nil and motif.title_info.menu ~=
 	motif.title_info.menu.itemname.menunetwork = ''
 end
 
+-- Abre os paineis de sala sobre o jogo. O comando START devolve o controle
+-- imediatamente ao IKEMEN, mantendo a musica e a tela principal ativas.
+local function koffOpenRooms(mode)
+	os.execute('start "" "../KOF Online Rooms.exe" ' .. mode)
+end
+main.t_itemname['serverhost'] = function(t, item)
+	koffOpenRooms('create')
+end
+main.t_itemname['serverjoin'] = function(t, item)
+	koffOpenRooms('join')
+end
+
 main.f_start()
 menu.f_start()
 options.f_start()

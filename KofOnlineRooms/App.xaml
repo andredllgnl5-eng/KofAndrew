@@ -1,0 +1,16 @@
+<Application x:Class="KofOnlineRooms.App"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+  <Application.Resources>
+    <SolidColorBrush x:Key="Gold" Color="#FFFFBE38" />
+    <Style TargetType="Button">
+      <Setter Property="Foreground" Value="White"/><Setter Property="Background" Value="#FFB32631"/>
+      <Setter Property="BorderBrush" Value="#FFFF525D"/><Setter Property="BorderThickness" Value="1"/>
+      <Setter Property="FontWeight" Value="Bold"/><Setter Property="Padding" Value="16,9"/><Setter Property="Margin" Value="5"/>
+    </Style>
+    <Style TargetType="TextBox">
+      <Setter Property="Background" Value="#FF20222B"/><Setter Property="Foreground" Value="White"/>
+      <Setter Property="BorderBrush" Value="#FF555865"/><Setter Property="Padding" Value="10,7"/><Setter Property="Margin" Value="5"/>
+    </Style>
+  </Application.Resources>
+</Application>

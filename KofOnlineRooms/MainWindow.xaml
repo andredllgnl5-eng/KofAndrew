@@ -1,0 +1,77 @@
+<Window x:Class="KofOnlineRooms.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="KOF Andrew Online" Width="940" Height="650" MinWidth="820" MinHeight="560"
+        WindowStartupLocation="CenterScreen" Background="#F008090D" Topmost="True">
+  <Grid Margin="24">
+    <Grid.RowDefinitions><RowDefinition Height="Auto"/><RowDefinition Height="*"/><RowDefinition Height="Auto"/></Grid.RowDefinitions>
+    <Grid>
+      <StackPanel>
+        <TextBlock Text="KOF ANDREW ONLINE" Foreground="{StaticResource Gold}" FontSize="29" FontWeight="Black"/>
+        <TextBlock x:Name="Subtitle" Text="SALAS DA COMUNIDADE" Foreground="#FFB7B9C2" FontSize="13"/>
+      </StackPanel>
+      <Button Content="✕" HorizontalAlignment="Right" VerticalAlignment="Top" Width="42" Click="Close_Click"/>
+    </Grid>
+
+    <Grid Grid.Row="1" Margin="0,20,0,10">
+      <Border x:Name="EntryPanel" Background="#E8151720" BorderBrush="#44FFFFFF" BorderThickness="1" CornerRadius="8" Padding="24">
+        <Grid>
+          <StackPanel x:Name="CreatePanel" Width="500" HorizontalAlignment="Center" VerticalAlignment="Center">
+            <TextBlock Text="CRIAR PARTIDA" Foreground="{StaticResource Gold}" FontSize="22" FontWeight="Bold" HorizontalAlignment="Center"/>
+            <TextBlock Text="Apelido" Foreground="#FFB7B9C2" Margin="5,20,5,0"/><TextBox x:Name="CreateNickname" MaxLength="18"/>
+            <TextBlock Text="Nome da sala" Foreground="#FFB7B9C2" Margin="5,8,5,0"/><TextBox x:Name="RoomName" MaxLength="28" Text="Sala KOF Andrew"/>
+            <TextBlock Text="Quantidade de espectadores (0 a 4)" Foreground="#FFB7B9C2" Margin="5,8,5,0"/>
+            <ComboBox x:Name="SpectatorCapacity" SelectedIndex="4" Margin="5" Padding="10,7">
+              <ComboBoxItem Content="0"/><ComboBoxItem Content="1"/><ComboBoxItem Content="2"/><ComboBoxItem Content="3"/><ComboBoxItem Content="4"/>
+            </ComboBox>
+            <Button Content="CRIAR SALA" Height="48" Click="CreateRoom_Click" Margin="5,20,5,5"/>
+          </StackPanel>
+
+          <Grid x:Name="JoinPanel" Visibility="Collapsed">
+            <Grid.RowDefinitions><RowDefinition Height="Auto"/><RowDefinition Height="*"/><RowDefinition Height="Auto"/></Grid.RowDefinitions>
+            <Grid>
+              <TextBox x:Name="JoinNickname" Width="280" HorizontalAlignment="Left" MaxLength="18" ToolTip="Seu apelido"/>
+              <Button Content="ATUALIZAR SALAS" HorizontalAlignment="Right" Click="RefreshRooms_Click"/>
+            </Grid>
+            <ListBox Grid.Row="1" x:Name="RoomList" Background="#99101218" Foreground="White" BorderBrush="#33FFFFFF" Margin="5,14" FontSize="15" DisplayMemberPath="Display"/>
+            <Button Grid.Row="2" Content="ENTRAR NA SALA SELECIONADA" Height="48" Click="JoinRoom_Click"/>
+          </Grid>
+        </Grid>
+      </Border>
+
+      <Grid x:Name="RoomPanel" Visibility="Collapsed">
+        <Grid.ColumnDefinitions><ColumnDefinition Width="1.3*"/><ColumnDefinition Width="0.7*"/></Grid.ColumnDefinitions>
+        <Border Background="#E8151720" BorderBrush="#44FFFFFF" BorderThickness="1" CornerRadius="8" Padding="22">
+          <Grid><Grid.RowDefinitions><RowDefinition Height="Auto"/><RowDefinition Height="Auto"/><RowDefinition Height="*"/><RowDefinition Height="Auto"/></Grid.RowDefinitions>
+            <TextBlock x:Name="CurrentRoomName" Foreground="{StaticResource Gold}" FontSize="22" FontWeight="Bold"/>
+            <Grid Grid.Row="1" Margin="0,24,0,14"><Grid.ColumnDefinitions><ColumnDefinition/><ColumnDefinition Width="65"/><ColumnDefinition/></Grid.ColumnDefinitions>
+              <StackPanel><TextBlock Text="PLAYER 1" Foreground="{StaticResource Gold}" HorizontalAlignment="Center"/><TextBlock x:Name="PlayerOne" Text="AGUARDANDO" Foreground="White" FontSize="20" FontWeight="Bold" HorizontalAlignment="Center"/></StackPanel>
+              <TextBlock Grid.Column="1" Text="VS" Foreground="#FFFF3545" FontSize="27" FontWeight="Black" HorizontalAlignment="Center"/>
+              <StackPanel Grid.Column="2"><TextBlock Text="PLAYER 2" Foreground="{StaticResource Gold}" HorizontalAlignment="Center"/><TextBlock x:Name="PlayerTwo" Text="AGUARDANDO" Foreground="White" FontSize="20" FontWeight="Bold" HorizontalAlignment="Center"/></StackPanel>
+            </Grid>
+            <Grid Grid.Row="2"><Grid.ColumnDefinitions><ColumnDefinition/><ColumnDefinition/></Grid.ColumnDefinitions>
+              <StackPanel><TextBlock Text="FILA" Foreground="{StaticResource Gold}" FontWeight="Bold"/><ListBox x:Name="QueueList" Background="Transparent" BorderThickness="0" Foreground="White"/></StackPanel>
+              <StackPanel Grid.Column="1"><TextBlock Text="ESPECTADORES" Foreground="{StaticResource Gold}" FontWeight="Bold"/><ListBox x:Name="SpectatorList" Background="Transparent" BorderThickness="0" Foreground="White"/></StackPanel>
+            </Grid>
+            <StackPanel Grid.Row="3" Orientation="Horizontal">
+              <Button x:Name="QueueButton" Content="ENTRAR NA FILA" Click="Queue_Click"/>
+              <Button x:Name="StartButton" Content="INICIAR PARTIDA" Click="StartMatch_Click" Visibility="Collapsed" Background="#FF187A44"/>
+            </StackPanel>
+          </Grid>
+        </Border>
+
+        <Border Grid.Column="1" Background="#E8151720" BorderBrush="#44FFFFFF" BorderThickness="1" CornerRadius="8" Padding="16" Margin="14,0,0,0">
+          <Grid><Grid.RowDefinitions><RowDefinition Height="Auto"/><RowDefinition Height="*"/><RowDefinition Height="Auto"/></Grid.RowDefinitions>
+            <TextBlock Text="CHAT DA SALA" Foreground="{StaticResource Gold}" FontSize="16" FontWeight="Bold"/>
+            <ListBox Grid.Row="1" x:Name="ChatList" Background="Transparent" BorderThickness="0" Foreground="White" Margin="0,10" ScrollViewer.HorizontalScrollBarVisibility="Disabled"/>
+            <Grid Grid.Row="2"><Grid.ColumnDefinitions><ColumnDefinition/><ColumnDefinition Width="70"/></Grid.ColumnDefinitions>
+              <TextBox x:Name="ChatInput" MaxLength="180" KeyDown="ChatInput_KeyDown"/>
+              <Button Grid.Column="1" Content="➤" Click="SendChat_Click"/>
+            </Grid>
+          </Grid>
+        </Border>
+      </Grid>
+    </Grid>
+    <TextBlock Grid.Row="2" x:Name="StatusText" Text="Made By Andrew" Foreground="#FF999BA5"/>
+  </Grid>
+</Window>
