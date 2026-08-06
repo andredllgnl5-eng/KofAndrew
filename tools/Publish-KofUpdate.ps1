@@ -55,7 +55,8 @@ $manifest = [ordered]@{
     packageSha256 = $packageHash
     files = $entries
 }
-$manifest | ConvertTo-Json -Depth 5 | Set-Content -LiteralPath $manifestPath -Encoding UTF8
+$manifestJson = $manifest | ConvertTo-Json -Depth 5
+[IO.File]::WriteAllText($manifestPath, $manifestJson, (New-Object Text.UTF8Encoding($false)))
 
 gh release create $tag $archive --repo andredllgnl5-eng/KofAndrew-Updates --title "KOF Andrew Online $tag" --notes "Atualização oficial do KOF Andrew Online. Made By Andrew."
 $updatesRepo = Join-Path $OutputPath 'updates-repo'
