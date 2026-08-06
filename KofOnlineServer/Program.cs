@@ -22,6 +22,7 @@ builder.Logging.SetMinimumLevel(LogLevel.Warning);
 builder.Logging.AddFilter("Microsoft.AspNetCore", LogLevel.Warning);
 builder.Logging.AddFilter("Microsoft.AspNetCore.Server.Kestrel", LogLevel.None);
 builder.Services.AddSingleton<ArenaState>();
+builder.Services.AddSingleton<RoomHubState>();
 
 var app = builder.Build();
 
@@ -79,6 +80,54 @@ app.MapPost("/api/players/leave", (PlayerRequest request, ArenaState arena) =>
     arena.Leave(request.PlayerId) ? Results.Ok(arena.Snapshot()) : Results.NotFound(new { error = "Jogador não encontrado." }));
 
 app.MapPost("/api/admin/advance", (ArenaState arena) => Results.Ok(arena.AdvanceQueue()));
+
+// API v2: salas 1x1, fila, espectadores, chat e migracao automatica do dono.
+app.MapGet("/api/rooms", (RoomHubState rooms) => Results.Ok(rooms.ListRooms()));
+app.MapGet("/api/rooms/{roomId:guid}", (Guid roomId, RoomHubState rooms) =>
+    rooms.TrySnapshot(roomId, out var snapshot) ? Results.Ok(snapshot) : Results.NotFound(new { error = "Sala não encontrada." }));
+app.MapPost("/api/rooms", (CreateRoomRequest request, RoomHubState rooms) =>
+{
+    try { return Results.Ok(rooms.Create(request)); }
+    catch (ArgumentException ex) { return Results.BadRequest(new { error = ex.Message }); }
+});
+app.MapPost("/api/rooms/{roomId:guid}/join", (Guid roomId, JoinRoomRequest request, RoomHubState rooms) =>
+{
+    try { return Results.Ok(rooms.Join(roomId, request)); }
+    catch (KeyNotFoundException ex) { return Results.NotFound(new { error = ex.Message }); }
+    catch (InvalidOperationException ex) { return Results.Conflict(new { error = ex.Message }); }
+    catch (ArgumentException ex) { return Results.BadRequest(new { error = ex.Message }); }
+});
+app.MapPost("/api/rooms/{roomId:guid}/heartbeat", (Guid roomId, RoomPlayerRequest request, RoomHubState rooms) =>
+    rooms.Heartbeat(roomId, request.PlayerId) ? Results.Ok() : Results.NotFound(new { error = "Participante não encontrado." }));
+app.MapPost("/api/rooms/{roomId:guid}/leave", (Guid roomId, RoomPlayerRequest request, RoomHubState rooms) =>
+    rooms.Leave(roomId, request.PlayerId) ? Results.Ok() : Results.NotFound(new { error = "Participante não encontrado." }));
+app.MapPost("/api/rooms/{roomId:guid}/queue", (Guid roomId, QueueRoomRequest request, RoomHubState rooms) =>
+{
+    try { return Results.Ok(rooms.SetQueue(roomId, request.PlayerId, request.Join)); }
+    catch (KeyNotFoundException ex) { return Results.NotFound(new { error = ex.Message }); }
+    catch (InvalidOperationException ex) { return Results.Conflict(new { error = ex.Message }); }
+});
+app.MapPost("/api/rooms/{roomId:guid}/start", (Guid roomId, RoomPlayerRequest request, RoomHubState rooms) =>
+{
+    try { return Results.Ok(rooms.Start(roomId, request.PlayerId)); }
+    catch (KeyNotFoundException ex) { return Results.NotFound(new { error = ex.Message }); }
+    catch (InvalidOperationException ex) { return Results.Conflict(new { error = ex.Message }); }
+    catch (UnauthorizedAccessException ex) { return Results.Json(new { error = ex.Message }, statusCode: 403); }
+});
+app.MapPost("/api/rooms/{roomId:guid}/result", (Guid roomId, MatchResultRequest request, RoomHubState rooms) =>
+{
+    try { return Results.Ok(rooms.ReportResult(roomId, request)); }
+    catch (KeyNotFoundException ex) { return Results.NotFound(new { error = ex.Message }); }
+    catch (InvalidOperationException ex) { return Results.Conflict(new { error = ex.Message }); }
+});
+app.MapGet("/api/rooms/{roomId:guid}/chat", (Guid roomId, long? after, RoomHubState rooms) =>
+    rooms.TryMessages(roomId, after ?? 0, out var messages) ? Results.Ok(messages) : Results.NotFound(new { error = "Sala não encontrada." }));
+app.MapPost("/api/rooms/{roomId:guid}/chat", (Guid roomId, SendChatRequest request, RoomHubState rooms) =>
+{
+    try { return Results.Ok(rooms.SendMessage(roomId, request)); }
+    catch (KeyNotFoundException ex) { return Results.NotFound(new { error = ex.Message }); }
+    catch (ArgumentException ex) { return Results.BadRequest(new { error = ex.Message }); }
+});
 
 try
 {
