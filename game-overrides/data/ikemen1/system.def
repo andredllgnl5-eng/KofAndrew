@@ -64,21 +64,21 @@ module =                    ;External Lua code
  ;Music will continue to play between screens if the files names
  ;are the same, and both BGMs are specified to loop.
   ;Music to play at title screen.
-title.bgm = sound/dreamscape.mp3
+title.bgm = sound/delete-me-dollwave.mp3
 title.bgm.volume = 14     ;volume baixo para acompanhar o menu
 title.bgm.loop = 1        ;Set to 0 to prevent looping
 title.bgm.loopstart = 
 title.bgm.loopend = 
   ;Music to play at char select screen.
-select.bgm = sound/dreamscape.mp3
+select.bgm = sound/delete-me-dollwave.mp3
 select.bgm.volume = 14
 select.bgm.loop = 1
 select.bgm.loopstart = 
 select.bgm.loopend = 
   ;Music to play at versus screen.
-vs.bgm = sound/dreamscape.mp3
-vs.bgm.volume = 14
-vs.bgm.loop = 1
+vs.bgm =
+vs.bgm.volume = 0
+vs.bgm.loop = 0
 vs.bgm.loopstart = 
 vs.bgm.loopend = 
   ;Music to play at victory screen.
@@ -123,11 +123,13 @@ hiscore.bgm.loopend =
 [Title Info]
 fadein.time = 10
 fadeout.time = 10
-menu.pos = 640,300
+menu.pos = 640,150
 menu.tween.factor = 0.5
 menu.item.font = 4,0,0, 230,230,235
 menu.item.active.font = 4,0,0, 255,70,88
-menu.item.spacing = 0, 54
+menu.item.scale = 0.48, 0.48
+menu.item.active.scale = 0.48, 0.48
+menu.item.spacing = 0, 68
 menu.item.layerno = 2
 menu.item.active.layerno = 2
 
@@ -175,7 +177,7 @@ textinput.overlay.alpha = 0, 128
 ; These parameters define the window in which the items are visible
 ; in.
 menu.window.margins.y = 40, 30
-menu.window.visibleitems = 6
+menu.window.visibleitems = 8
 menu.boxcursor.visible = 0         ;Set to 1 to enable default cursor display
 menu.boxcursor.tween.snap = 1      ;Set to 0 to disable cursor snap on menu section change
 menu.boxcursor.tween.factor = 0.5
@@ -252,7 +254,7 @@ menu.itemname.menuwatch.back = BACK
 menu.itemname.options = OPTIONS
 
 ; Exit Game
-menu.itemname.exit = EXIT
+menu.itemname.exit = SAIR
 
 ;----------------------------
 ;Title background definition
@@ -266,6 +268,28 @@ spriteno = 1000,0
 layerno = 0
 start = -640,0
 
+; Fundo exclusivo da lista de salas online. O Lua alterna para este BGDef
+; somente enquanto o jogador navega pelos servidores.
+[ServerListBGdef]
+spr = andrew/server-list.sff
+bgclearcolor = 0,0,0
+
+[ServerListBG Panel]
+type = normal
+spriteno = 1200,0
+layerno = 0
+start = -640,0
+
+[CreateRoomBGdef]
+spr = andrew/create-room.sff
+bgclearcolor = 0,0,0
+
+[CreateRoomBG Panel]
+type = normal
+spriteno = 1210,0
+layerno = 0
+start = -640,0
+
 [TitleBG Andrew Orochi Energy]
 type = anim
 actionno = 9800
@@ -274,80 +298,6 @@ start = -640,0
 trans = add
 alpha = 220,256
 mask = 1
-
-[TitleBG Background Clouds Top]
-type = normal
-spriteno = 100,2
-layerno = 0
-start = -640, -50
-tile = 1,0
-velocity = -0.1, 0
-window = 0,0, 1279,959
-mask = 1
-
-[TitleBG Background Clouds Bottom]
-type = normal
-spriteno = 100,3
-layerno = 0
-start = -640, 0
-tile = 1,0
-velocity = -0.7, 0
-window = 0,0, 1279,959
-mask = 1
-
-
-[TitleBG Background Black Bars]
-type = normal
-spriteno = 100,1
-layerno = 0
-start = -640,0
-trans = add1
-mask = 1
-
-
-[TitleBG Background Black Menu Bars]
-type = normal
-spriteno = 98,0
-layerno = 0
-start = 640,282
-trans = add1
-mask = 1
-
-[TitleBG Title LogoShadow]
-type = normal
-spriteno = 0, 2
-layerno = 1
-start = -250,155
-mask = 1
-alpha = 256,96
-trans = add
-sin.y = 15, 264, 2
-
-[TitleBG Title LogoShadow]
-type = normal
-spriteno = 0, 3
-layerno = 1
-start = -250,155
-mask = 1
-alpha = 256,96
-trans = add
-sin.y = 15, 264, 32
-
-[TitleBG Title Logo]
-type = normal
-spriteno = 0, 0
-layerno = 1
-start = -250,155
-mask = 1
-sin.y = 15, 264, 2
-
-[TitleBG Title Logo 2]
-type = normal
-spriteno = 0, 1
-layerno = 1
-start = -250,155
-mask = 1
-sin.y = 15, 264, 32
 
 ;----------------------------
 [Infobox] ;(new in MUGEN 1.0)
@@ -378,10 +328,10 @@ KOF ANDREW ONLINE
 [Select Info]
 fadein.time = 10
 fadeout.time = 10
-rows = 5
-columns = 7
+rows = 8
+columns = 10
 wrapping = 1                       ;1 to let cursor wrap around
-pos = 544,280                      ;Grade 7x5 centralizada
+pos = 500,236                      ;Grade 10x8 centralizada
 showemptyboxes = 0                 ;A grade completa nao exibe espacos vazios
 moveoveremptyboxes = 0             ;O cursor percorre apenas lutadores validos
 cell.size = 24,24                  ;x,y size of each cell (in pixels)
@@ -2022,7 +1972,7 @@ menu.item.offset = 0, 0
 menu.item.font = 7,0,1, 191,191,191
 menu.item.scale = 1.0, 1.0
 menu.item.active.offset = 0, 0
-menu.item.active.font = 7,0,1
+menu.item.active.font = 7,0,1, 255,70,88
 menu.item.active.scale = 1.0, 1.0
 menu.item.selected.offset = 0, 0
 menu.item.selected.font = 7,0,1, 0,247,247
@@ -2219,10 +2169,12 @@ menu.itemname.back = Back
 ;-------------------
 ;Replay select screen background
 [ReplayBGdef]
+spr = andrew/server-list.sff
+bgclearcolor = 0,0,0
 
 [ReplayBG Background Sky]
 type = normal
-spriteno = 204,0
+spriteno = 1200,0
 layerno = 0
 start = -640,0
 
@@ -2741,10 +2693,12 @@ glyphs = A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U, V, W, X,
 ;-------------------
 ;Hiscore screen background
 [HiscoreBGdef]
+spr = andrew/create-room.sff
+bgclearcolor = 0,0,0
 
 [HiscoreBG Background Sky]
 type = normal
-spriteno = 100,0
+spriteno = 1210,0
 layerno = 0
 start = -640,0
 

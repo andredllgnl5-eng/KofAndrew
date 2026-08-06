@@ -193,8 +193,22 @@ public partial class MainWindow : Window
 
         GameButton.IsEnabled = false;
         await CheckServerAsync();
+        StartRoomBridge();
         Process.Start(new ProcessStartInfo(GameExecutable) { WorkingDirectory = _config.GameDirectory, UseShellExecute = true });
         GameButton.IsEnabled = true;
+    }
+
+    private void StartRoomBridge()
+    {
+        var bridge = Path.Combine(_config.GameDirectory, "KofRoomBridge.exe");
+        if (!File.Exists(bridge)) return;
+        Process.Start(new ProcessStartInfo(bridge)
+        {
+            WorkingDirectory = _config.GameDirectory,
+            UseShellExecute = false,
+            CreateNoWindow = true,
+            Arguments = "--watch"
+        });
     }
 
     private void Settings_Click(object sender, RoutedEventArgs e)

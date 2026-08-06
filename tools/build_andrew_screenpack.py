@@ -9,7 +9,8 @@ from PIL import Image, ImageEnhance, ImageDraw, ImageFilter, ImageFont
 
 ROOT = Path(__file__).resolve().parents[1]
 SOURCE = ROOT / "KofOnlineLauncher" / "Assets" / "kyo-orochi-andrew-background.png"
-OUT = ROOT / "Ikemen KOF Online" / "data" / "ikemen1" / "andrew"
+MENU_SOURCE = ROOT / "game-overrides" / "data" / "ikemen1" / "andrew" / "menu-fire-base.png"
+OUT = ROOT / "game-overrides" / "data" / "ikemen1" / "andrew"
 
 
 def cover(image: Image.Image, size=(1280, 720)) -> Image.Image:
@@ -30,11 +31,31 @@ def base_variant(image: Image.Image, select=False) -> Image.Image:
         draw.rectangle((300, 70, 980, 650), fill=(2, 2, 8, 74))
     else:
         draw.rectangle((0, 0, 690, 720), fill=(0, 0, 4, 70))
-    font_path = ROOT / "Ikemen KOF Online" / "font" / "Open_Sans" / "OpenSans-BoldItalic.ttf"
+    font_path = Path("C:/Windows/Fonts/arialbd.ttf")
     signature_font = ImageFont.truetype(str(font_path), 22)
     title_font = ImageFont.truetype(str(font_path), 38)
     draw.text((1238, 687), "Made By Andrew", font=signature_font, anchor="rs", fill=(255, 194, 67, 245), stroke_width=2, stroke_fill=(25, 0, 8, 235))
     draw.text((42, 45), "KOF OROCHI ONLINE" if not select else "SELECT YOUR FIGHTER", font=title_font, fill=(255, 220, 160, 245), stroke_width=3, stroke_fill=(76, 0, 22, 245))
+    return image
+
+
+def menu_variant(image: Image.Image) -> Image.Image:
+    image = ImageEnhance.Contrast(image).enhance(1.08)
+    image = ImageEnhance.Color(image).enhance(1.12)
+    draw = ImageDraw.Draw(image, "RGBA")
+    title_font = ImageFont.truetype("C:/Windows/Fonts/arialbd.ttf", 47)
+    signature_font = ImageFont.truetype("C:/Windows/Fonts/arialbd.ttf", 20)
+    draw.text((640, 54), "KOF MUGEN ONLINE", font=title_font, anchor="ma",
+              fill=(244, 236, 222, 255), stroke_width=4, stroke_fill=(115, 0, 12, 255))
+    # Os textos permanecem nativos e clicáveis; somente as molduras são rasterizadas.
+    for index in range(8):
+        y0 = 122 + index * 68
+        y1 = y0 + 55
+        draw.rounded_rectangle((338, y0, 942, y1), radius=8,
+                               fill=(7, 7, 9, 218), outline=(126, 12, 20, 245), width=2)
+        draw.line((365, y1 - 3, 915, y1 - 3), fill=(230, 27, 37, 130), width=1)
+    draw.text((1245, 696), "Made By Andrew", font=signature_font, anchor="rs",
+              fill=(255, 214, 151, 245), stroke_width=2, stroke_fill=(45, 0, 5, 240))
     return image
 
 
@@ -99,7 +120,7 @@ def write_sff(path: Path, sprites):
 def main():
     OUT.mkdir(parents=True, exist_ok=True)
     source = cover(Image.open(SOURCE))
-    title = base_variant(source.copy(), select=False)
+    title = menu_variant(cover(Image.open(MENU_SOURCE)))
     select = base_variant(source.copy(), select=True)
     overlays = [energy_frame(AndrewSeed, False) for AndrewSeed in (98, 1998, 2026, 777)]
     select_overlays = [energy_frame(AndrewSeed, True) for AndrewSeed in (198, 2998, 3026, 888)]
