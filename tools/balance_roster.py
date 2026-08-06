@@ -9,7 +9,7 @@ from pathlib import Path
 
 
 TEXT_EXTENSIONS = {".cns", ".st", ".zss", ".txt"}
-DAMAGE_RE = re.compile(r"^(?P<prefix>\s*(?:damage|hitdamage)\s*=\s*)(?P<hit>\d+)(?P<rest>\s*(?:,\s*(?P<guard>\d+))?.*)$", re.I)
+DAMAGE_RE = re.compile(r"^(?P<prefix>\s*(?:damage|hitdamage)\s*=\s*)(?P<hit>-?\d+)(?P<rest>\s*(?:,\s*(?P<guard>-?\d+))?.*)$", re.I)
 CEIL_DAMAGE_RE = re.compile(r"^(?P<prefix>\s*(?:damage|hitdamage)\s*=\s*(?:\(\s*)?ceil\(\s*)(?P<hit>\d+)(?P<rest>\s*\).*)$", re.I)
 STAT_RE = {
     "life": re.compile(r"^(?P<prefix>\s*life\s*=\s*)[-+]?\d+(?P<rest>\s*(?:;.*)?)$", re.I),
@@ -69,6 +69,8 @@ def percentile(values: list[int], fraction: float) -> float:
 
 def normalized_damage(value: int, factor: float) -> int:
     # Preserva multi-hits baixos e aproxima o dano forte do padrão KOF.
+    if value <= 0:
+        return 0
     if value <= 12:
         return value
     adjusted = round(value * factor)
