@@ -58,4 +58,16 @@ $manifest = [ordered]@{
 $manifest | ConvertTo-Json -Depth 5 | Set-Content -LiteralPath $manifestPath -Encoding UTF8
 
 gh release create $tag $archive --repo andredllgnl5-eng/KofAndrew-Updates --title "KOF Andrew Online $tag" --notes "Atualização oficial do KOF Andrew Online. Made By Andrew."
-Write-Host "Release publicada. Atualize latest.json no branch main do repositório KofAndrew-Updates."
+$updatesRepo = Join-Path $OutputPath 'updates-repo'
+if (-not (Test-Path (Join-Path $updatesRepo '.git'))) {
+    gh repo clone andredllgnl5-eng/KofAndrew-Updates $updatesRepo
+}
+Copy-Item -LiteralPath $manifestPath -Destination (Join-Path $updatesRepo 'latest.json') -Force
+Push-Location $updatesRepo
+try {
+    git pull --ff-only
+    git add -- latest.json
+    git commit -m "Publicar manifesto $tag"
+    git push
+} finally { Pop-Location }
+Write-Host "Release e manifesto $tag publicados com sucesso."

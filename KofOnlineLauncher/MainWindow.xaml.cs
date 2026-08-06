@@ -64,8 +64,9 @@ public partial class MainWindow : Window
         for (var index = 0; index < manifest.Files.Count; index++)
         {
             var entry = manifest.Files[index];
-            var path = Path.GetFullPath(Path.Combine(AppContext.BaseDirectory, entry.Path.Replace('/', Path.DirectorySeparatorChar)));
-            if (!path.StartsWith(AppContext.BaseDirectory, StringComparison.OrdinalIgnoreCase) || !File.Exists(path)) return false;
+            var installRoot = Path.GetFullPath(AppContext.BaseDirectory).TrimEnd(Path.DirectorySeparatorChar) + Path.DirectorySeparatorChar;
+            var path = Path.GetFullPath(Path.Combine(installRoot, entry.Path.Replace('/', Path.DirectorySeparatorChar)));
+            if (!path.StartsWith(installRoot, StringComparison.OrdinalIgnoreCase) || !File.Exists(path)) return false;
             var info = new FileInfo(path);
             if (info.Length != entry.Size) return false;
             GameStatus.Text = $"Verificando arquivos… {index + 1}/{total}";
